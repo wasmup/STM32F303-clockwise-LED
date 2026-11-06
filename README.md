@@ -14,6 +14,11 @@ A bare-metal LED chasing example for the STM32F3DISCOVERY board. It lights the e
 sudo dnf install make arm-none-eabi-gcc openocd gdb usbutils
 # or
 # sudo apt install make arm-none-eabi-gcc openocd gdb usbutils
+
+
+code --install-extension ms-vscode.cpptools-extension-pack
+code --install-extension marus25.cortex-debug
+
 ```
 
 Package names may differ on other systems. Verify that `arm-none-eabi-gcc` and `openocd` are available on your `PATH`.
@@ -35,15 +40,35 @@ make
 
 This removes the previous build, compiles `blink.elf`, and uses OpenOCD to program, verify, and reset the board. The onboard LEDs should then cycle in sequence. Flashing replaces the firmware already on the board.
 
+In VS Code, select **Build and flash (make)** in Run and Debug and press
+**F5** to run the same command in the integrated terminal.
+
 Other targets:
 
 | Command | Effect |
 | --- | --- |
 | `make build` | Build `blink.elf` without flashing. |
+| `make debug` | Build `blink-debug.elf` with settings suited to stepping through code. |
 | `make run` or `make flash` | Build if needed, then program and reset the board. |
 | `make clean` | Remove `blink.elf`. |
 
 ## Debugging
+
+### VS Code
+
+Install the recommended **Cortex-Debug** extension and an ARM-capable GDB.
+The supplied configuration expects an ARM-capable `gdb` on `PATH`; if your
+system uses a different executable, such as `gdb-multiarch` or
+`arm-none-eabi-gdb`, change `gdbPath` in `.vscode/launch.json`. Connect the
+board and stop any existing OpenOCD session.
+
+Open the repository in VS Code, select **Debug STM32 (OpenOCD)** in Run and
+Debug, and press **F5**. VS Code builds the debug firmware, starts OpenOCD,
+flashes the board, and stops at `main`. Set breakpoints in `main.c` and use
+the debug toolbar to continue or step through the code. Stop the debug session
+before running `make` or starting another OpenOCD session.
+
+### Command line
 
 Build the firmware, then start OpenOCD from the repository directory:
 

@@ -72,7 +72,7 @@ int main(void) {
     for (;;) {
         for (uint8_t bit = 0; bit < 8; ++bit) {
             LED_SetByte((uint8_t)(1u << bit));
-            delay_ms(100);
+            delay_ms(1000);
         }
     }
 }

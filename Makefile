@@ -4,7 +4,7 @@ OPENOCD ?= openocd
 CFLAGS ?= -mcpu=cortex-m4 -mthumb -O2 -g -ffreestanding
 LDFLAGS ?= -nostdlib -Wl,--gc-sections -T linker.ld
 
-.PHONY: all build run flash clean
+.PHONY: all build debug run flash clean
 
 all:
 	$(MAKE) clean
@@ -12,11 +12,16 @@ all:
 
 build: blink.elf
 
+debug: blink-debug.elf
+
 blink.elf: startup.c main.c linker.ld
 	$(CC) $(CFLAGS) $(LDFLAGS) startup.c main.c -o $@
+
+blink-debug.elf: startup.c main.c linker.ld
+	$(CC) $(filter-out -O%,$(CFLAGS)) -Og -g $(LDFLAGS) startup.c main.c -o $@
 
 run flash: blink.elf
 	$(OPENOCD) -f stm32f3.cfg -c "program blink.elf verify reset exit"
 
 clean:
-	$(RM) blink.elf
+	$(RM) blink.elf blink-debug.elf
